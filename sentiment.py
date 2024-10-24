@@ -30,8 +30,20 @@ def album_data(row):
         return '2021'
     else:
         return 'No Date'
+    
+def clean_lyrics(lyrics):
+    lyrics['clean_lyric'] = lyrics['lyric'].str.lower()
+    lyrics['clean_lyric']= lyrics['clean_lyric'].str.replace('[^\w\s]','')
+
+    stopwords = ['the', 'in', 'a', 'an', 'and', 'but', 'or', 'this', 'that', 'to', 'is', 'am', 'was', 'were', 'be', 'being', 'been']
+    
+    lyrics['clean_lyric'] = lyrics['clean_lyric'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stopwords)]))
+    
+    return lyrics
 
 lyrics = load_data()
 
 lyrics['album_year'] = lyrics.apply(lambda row: album_data(row), axis=1)
+
+lyrics = clean_lyrics(lyrics)
 
